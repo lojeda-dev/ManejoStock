@@ -21,51 +21,52 @@ public class Stock {
     }
 
     public void stockTotal() {
+        System.out.println("STOCK TOTAL");
         this.materiaPrimas.forEach(mp -> {
-            System.out.println("MATERIA PRIMA: " + mp.getNombre() + " [" + mp.getStock()+ "]");
+            System.out.println("MATERIA PRIMA: " + mp.getNombre() + " [" + mp.getStock() + "]");
         });
         this.componentes.forEach(c -> {
-            System.out.println("COMPONENTE: " + c.getNombre()+ " [" + c.getStock()+ "]");
+            System.out.println("COMPONENTE: " + c.getNombre() + " [" + c.getStock() + "]");
         });
         this.componentesCompuestos.forEach(cc -> {
-            System.out.println("COMPONENTE COMPUESTO: " + cc.getNombre()+ " [" + cc.getStock()+ "]");
+            System.out.println("COMPONENTE COMPUESTO: " + cc.getNombre() + " [" + cc.getStock() + "]");
         });
         this.subComponentesCompuestos.forEach(scc -> {
-            System.out.println("SUBCOMPONENTE COMPUESTO: " + scc.getNombre()+ " [" + scc.getStock()+ "]");
+            System.out.println("SUBCOMPONENTE COMPUESTO: " + scc.getNombre() + " [" + scc.getStock() + "]");
             ;
         });
         this.productosFinales.forEach(p -> {
-            System.out.println("PRODUCTO FINAL: " + p.getNombre()+ " [" + p.getStock()+ "]");
+            System.out.println("PRODUCTO FINAL: " + p.getNombre() + " [" + p.getStock() + "]");
         });
     }
 
-    public void stockMateriasPrimas(){
+    public void stockMateriasPrimas() {
         this.materiaPrimas.forEach(mp -> {
-            System.out.println("MATERIA PRIMA: " + mp.getNombre() + " [" + mp.getStock()+ "]");
+            System.out.println("MATERIA PRIMA: " + mp.getNombre() + " [" + mp.getStock() + "]");
         });
     }
 
-    public void stockComponentes(){
+    public void stockComponentes() {
         this.componentes.forEach(c -> {
-            System.out.println("COMPONENTE: " + c.getNombre()+ " [" + c.getStock()+ "]");
+            System.out.println("COMPONENTE: " + c.getNombre() + " [" + c.getStock() + "]");
         });
     }
 
-    public void stockComponentesCompuestos(){
+    public void stockComponentesCompuestos() {
         this.componentesCompuestos.forEach(cc -> {
-            System.out.println("COMPONENTE COMPUESTO: " + cc.getNombre()+ " [" + cc.getStock()+ "]");
+            System.out.println("COMPONENTE COMPUESTO: " + cc.getNombre() + " [" + cc.getStock() + "]");
         });
     }
 
-    public void stockSubComponentesCompuestos(){
+    public void stockSubComponentesCompuestos() {
         this.subComponentesCompuestos.forEach(scc -> {
-            System.out.println("SUBCOMPONENTE COMPUESTO: " + scc.getNombre()+ " [" + scc.getStock()+ "]");
+            System.out.println("SUBCOMPONENTE COMPUESTO: " + scc.getNombre() + " [" + scc.getStock() + "]");
         });
     }
 
-    public void stockProductosFinales(){
+    public void stockProductosFinales() {
         this.productosFinales.forEach(p -> {
-            System.out.println("PRODUCTO FINAL: " + p.getNombre()+ " [" + p.getStock()+ "]");
+            System.out.println("PRODUCTO FINAL: " + p.getNombre() + " [" + p.getStock() + "]");
         });
     }
 }

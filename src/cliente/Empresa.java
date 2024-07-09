@@ -1,7 +1,7 @@
 package cliente;
 
+import modelos.*;
 import servicio.Fabrica;
-import modelos.ProductoFinal;
 
 public class Empresa {
     public static class PrimerParte {
@@ -16,9 +16,28 @@ public class Empresa {
         }
 
         public void reservar(ProductoFinal pf) {
-            fabrica.reservarProductoFinal(pf,1);
+            fabrica.reservarProductoFinal(pf, 1);
         }
 
+        public void agregarStockMateriaPrima(MateriaPrima mp, int cantidad) {
+            fabrica.agregarMateriaPrima(mp, cantidad);
+        }
+
+        public void agregarStockComponente(Componente c, int cantidad) {
+            fabrica.agregarComponente(c, cantidad);
+        }
+
+        public void agregarStockComponenteCompuesto(ComponenteCompuesto cc, int cantidad) {
+            fabrica.agregarComponenteCompuesto(cc, cantidad);
+        }
+
+        public void agregarStockSubComponenteCompuesto(SubComponenteCompuesto scc, int cantidad) {
+            fabrica.agregarSubComponenteCompuesto(scc, cantidad);
+        }
+
+        public void consultarEstadoTotal() {
+            fabrica.consultarEstado();
+        }
 
         public void mostrarStockTotal() {
             fabrica.mostrarStockTotal();
@@ -37,7 +56,7 @@ public class Empresa {
         }
 
         public void reservar(ProductoFinal pf) {
-            fabrica.reservarProductoFinal(pf,2);
+            fabrica.reservarProductoFinal(pf, 2);
         }
 
         public void mostrarStockTotal() {
