@@ -7,14 +7,8 @@ public class ComponenteCompuesto extends Componente {
     private Set<Componente> listaComponentes;
     private Set<SubComponenteCompuesto> listaSubComponentesCompuestos;
 
-    public ComponenteCompuesto(String nombre, int cantElementosConstruccion, int stock, Set<Componente> listaComponentes, Set<SubComponenteCompuesto> listaSubComponentesCompuestos) {
-        super(nombre, cantElementosConstruccion, stock);
-        this.listaComponentes = listaComponentes;
-        this.listaSubComponentesCompuestos = listaSubComponentesCompuestos;
-    }
-
-    public ComponenteCompuesto(String nombre, int cantElementosConstruccion, Set<Componente> listaComponentes, Set<SubComponenteCompuesto> listaSubComponentesCompuestos) {
-        super(nombre, cantElementosConstruccion);
+    public ComponenteCompuesto(String nombre, int cantElementosConstruccion, int stock, boolean estado, Set<Componente> listaComponentes, Set<SubComponenteCompuesto> listaSubComponentesCompuestos) {
+        super(nombre, cantElementosConstruccion, stock, estado);
         this.listaComponentes = listaComponentes;
         this.listaSubComponentesCompuestos = listaSubComponentesCompuestos;
     }
@@ -32,6 +26,7 @@ public class ComponenteCompuesto extends Componente {
         private String nombre;
         private int cantElementosConstruccion;
         private int stock;
+        private boolean estado;
         private Set<Componente> listaComponentes;
         private Set<SubComponenteCompuesto> listaSubComponentesCompuestos;
 
@@ -55,6 +50,11 @@ public class ComponenteCompuesto extends Componente {
             return this;
         }
 
+        public Builder setEstado(boolean estado) {
+            this.estado = estado;
+            return this;
+        }
+
         public Builder setListaComponentes(Componente componente) {
             this.listaComponentes.add(componente);
             return this;
@@ -67,7 +67,7 @@ public class ComponenteCompuesto extends Componente {
 
         @Override
         public ComponenteCompuesto build() {
-            return new ComponenteCompuesto(nombre, cantElementosConstruccion, stock, listaComponentes, listaSubComponentesCompuestos);
+            return new ComponenteCompuesto(nombre, cantElementosConstruccion, stock, estado, listaComponentes, listaSubComponentesCompuestos);
         }
     }
 }

@@ -7,12 +7,15 @@ public class Principal {
         ProductoFinal productoFinal = new ProductoFinal.Builder()
                 .setNombre("CHEVROLET")
                 .setCantElementosConstruccion(2)
-                .setStock(1)
+                .setStock(2)
+                .setListaComponentes(new Componente("VOLANTE", 1))
+                .setListaComponentes(new Componente("VOLANTE", 1))
+                .setListaComponentes(new Componente("VOLANTE", 1))
                 .setListaComponentes(new Componente("VOLANTE", 1))
                 .setListaComponentesCompuestos(new ComponenteCompuesto.Builder()
                         .setNombre("PUERTA")
                         .setCantElementosConstruccion(4)
-                        .setListaComponentes(new Componente("VIDRIO", 1))
+                        .setListaComponentes(new Componente("VIDRIO", 4))
                         .setListaSubComponentesCompuestos(new SubComponenteCompuesto.Builder()
                                 .setNombre("CHAPA")
                                 .setCantElementosConstruccion(4)
@@ -28,15 +31,22 @@ public class Principal {
                 .build();
 
 
-        /*Empresa.PrimerParte pp = new Empresa.PrimerParte();
+        Empresa.PrimerParte pp = new Empresa.PrimerParte();
         pp.cargarProductoFinal(productoFinal);
-        pp.mostrarStockTotal();*/
+        pp.reservar(productoFinal);
+        pp.reservar(productoFinal);
+        pp.reservar(productoFinal);
+        System.out.println("Final");
+        pp.mostrarStockTotal();
+        pp.reservar(pf);
 
-        Empresa.SegundaParte sp = new Empresa.SegundaParte();
+
+
+        /*Empresa.SegundaParte sp = new Empresa.SegundaParte();
         sp.cargarProductoFinal(productoFinal);
         sp.reservar(productoFinal);
         sp.reservar(productoFinal);
-        /*sp.reservar(pf);*/
+        sp.reservar(pf);*/
 
     }
 }

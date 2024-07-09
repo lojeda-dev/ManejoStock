@@ -6,13 +6,8 @@ import java.util.Set;
 public class SubComponenteCompuesto extends Componente {
     private Set<MateriaPrima> listaMateriasPrimas;
 
-    public SubComponenteCompuesto(String nombre, int cantElementosConstruccion, int stock, Set<MateriaPrima> listaMateriasPrimas) {
-        super(nombre, cantElementosConstruccion, stock);
-        this.listaMateriasPrimas = listaMateriasPrimas;
-    }
-
-    public SubComponenteCompuesto(String nombre, int cantElementosConstruccion, Set<MateriaPrima> listaMateriasPrimas) {
-        super(nombre, cantElementosConstruccion);
+    public SubComponenteCompuesto(String nombre, int cantElementosConstruccion, int stock, boolean estado, Set<MateriaPrima> listaMateriasPrimas) {
+        super(nombre, cantElementosConstruccion, stock, estado);
         this.listaMateriasPrimas = listaMateriasPrimas;
     }
 
@@ -25,6 +20,7 @@ public class SubComponenteCompuesto extends Componente {
         private String nombre;
         private int cantElementosConstruccion;
         private int stock;
+        private boolean estado;
         private Set<MateriaPrima> listaMateriasPrimas;
 
         public Builder() {
@@ -46,6 +42,11 @@ public class SubComponenteCompuesto extends Componente {
             return this;
         }
 
+        public Builder setEstado(boolean estado) {
+            this.estado = estado;
+            return this;
+        }
+
         public Builder setListaMateriasPrimas(MateriaPrima materiaPrima) {
             this.listaMateriasPrimas.add(materiaPrima);
             return this;
@@ -53,7 +54,7 @@ public class SubComponenteCompuesto extends Componente {
 
         @Override
         public SubComponenteCompuesto build() {
-            return new SubComponenteCompuesto(nombre, cantElementosConstruccion, stock, listaMateriasPrimas);
+            return new SubComponenteCompuesto(nombre, cantElementosConstruccion, stock, estado, listaMateriasPrimas);
         }
     }
 

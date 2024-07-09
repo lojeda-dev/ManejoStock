@@ -15,6 +15,11 @@ public class Empresa {
             fabrica.cargarProductoFinal(pf);
         }
 
+        public void reservar(ProductoFinal pf) {
+            fabrica.reservarProductoFinal(pf,1);
+        }
+
+
         public void mostrarStockTotal() {
             fabrica.mostrarStockTotal();
         }

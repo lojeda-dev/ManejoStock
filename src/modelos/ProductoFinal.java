@@ -8,8 +8,8 @@ public class ProductoFinal extends Componente {
     private Set<Componente> listaComponentes;
     private Set<ComponenteCompuesto> listaComponentesCompuestos;
 
-    public ProductoFinal(String nombre, int cantElementosConstruccion, int stock, Set<Componente> listaComponentes, Set<ComponenteCompuesto> listaComponentesCompuestos) {
-        super(nombre, cantElementosConstruccion, stock);
+    public ProductoFinal(String nombre, int cantElementosConstruccion, int stock, boolean estado, Set<Componente> listaComponentes, Set<ComponenteCompuesto> listaComponentesCompuestos) {
+        super(nombre, cantElementosConstruccion, stock, estado);
         this.listaComponentes = listaComponentes;
         this.listaComponentesCompuestos = listaComponentesCompuestos;
     }
@@ -26,6 +26,7 @@ public class ProductoFinal extends Componente {
         private String nombre;
         private int cantElementosConstruccion;
         private int stock;
+        private boolean estado;
         private Set<Componente> listaComponentes;
         private Set<ComponenteCompuesto> listaComponentesCompuestos;
 
@@ -49,6 +50,11 @@ public class ProductoFinal extends Componente {
             return this;
         }
 
+        public Builder setEstado(boolean estado) {
+            this.estado = estado;
+            return this;
+        }
+
         public Builder setListaComponentes(Componente componente) {
             this.listaComponentes.add(componente);
             return this;
@@ -61,7 +67,7 @@ public class ProductoFinal extends Componente {
 
         @Override
         public ProductoFinal build() {
-            return new ProductoFinal(nombre, cantElementosConstruccion, stock, listaComponentes, listaComponentesCompuestos);
+            return new ProductoFinal(nombre, cantElementosConstruccion, stock, estado, listaComponentes, listaComponentesCompuestos);
         }
     }
 }
