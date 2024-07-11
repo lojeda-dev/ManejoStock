@@ -7,11 +7,12 @@ public class Principal {
         MateriaPrima aluminio = new MateriaPrima("ALUMINIO", 2);
         MateriaPrima tungsteno = new MateriaPrima("TUNGSTENO", 1);
         MateriaPrima zinc = new MateriaPrima("ZINC", 2);
+        MateriaPrima hierro = new MateriaPrima("HIERRO", 1);
 
-        Componente motor = new Componente("MOTOR", 1);
+        /*Componente motor = new Componente("MOTOR", 1);
         Componente volante = new Componente("VOLANTE", 1);
         Componente carroceria = new Componente("CARROCERIA", 1);
-        Componente asiento = new Componente("ASIENTO", 4);
+        Componente asiento = new Componente("ASIENTO", 4);*/
         Componente vidrio = new Componente("VIDRIO", 4);
 
         SubComponenteCompuesto chapa = new SubComponenteCompuesto.Builder()
@@ -24,7 +25,9 @@ public class Principal {
         ComponenteCompuesto puerta = new ComponenteCompuesto.Builder()
                 .setNombre("PUERTA")
                 .setCantElementosConstruccion(4)
+/*
                 .setListaComponentes(vidrio)
+*/
                 .setListaSubComponentesCompuestos(chapa)
                 .build();
 
@@ -32,10 +35,10 @@ public class Principal {
                 .setNombre("CHEVROLET")
                 .setCantElementosConstruccion(5)
                 .setStock(2)
-                .setListaComponentes(motor)
+                /*.setListaComponentes(motor)
                 .setListaComponentes(carroceria)
                 .setListaComponentes(asiento)
-                .setListaComponentes(volante)
+                .setListaComponentes(volante)*/
                 .setListaComponentesCompuestos(puerta)
                 .build();
 
@@ -47,9 +50,10 @@ public class Principal {
 
         Empresa.PrimerParte pp = new Empresa.PrimerParte();
 
-        pp.agregarStockMateriaPrima(aluminio, 1);
-        pp.agregarStockMateriaPrima(zinc, 1);
-        pp.agregarStockMateriaPrima(tungsteno, 1);
+        pp.agregarStockMateriaPrima(aluminio, 10);
+        pp.agregarStockMateriaPrima(zinc, 10);
+        pp.agregarStockMateriaPrima(tungsteno, 10);
+        pp.agregarStockMateriaPrima(hierro, 10);
 /*
         pp.agregarStockComponente(motor,10);
         pp.agregarStockComponente(volante,10);

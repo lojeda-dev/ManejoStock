@@ -2,6 +2,7 @@ package servicio;
 
 import modelos.*;
 
+import java.util.IllegalFormatCodePointException;
 import java.util.Set;
 
 public class Fabrica {
@@ -21,8 +22,6 @@ public class Fabrica {
         if (opcion == 1) {
             if (stock.productosFinales.contains(pf)) {
                 if (stockDisponibleProductoFinal(pf)) {
-                    System.out.println("SE RESERVO (" + pf.getNombre() + ") EXITOSAMENTE");
-                    System.out.println("STOCK ACTUALIZADO");
                     this.stock.stockProductosFinales();
                 } else {
                     System.out.println("EL PRODUCTO FINAL(" + pf.getNombre() + ") NO POSEE STOCK");
@@ -34,8 +33,6 @@ public class Fabrica {
             }
         } else {
             if (stockDisponibleProductoFinal(pf)) {
-                System.out.println("SE RESERVO (" + pf.getNombre() + ") EXITOSAMENTE");
-                System.out.println("STOCK ACTUALIZADO");
                 this.stock.stockProductosFinales();
             } else {
                 System.out.println("EL PRODUCTO FINAL(" + pf.getNombre() + ") NO POSEE STOCK");
@@ -48,6 +45,7 @@ public class Fabrica {
         if (pf.getStock() > 0) {
             int cantidad = pf.getStock() - 1;
             pf.setStock(cantidad);
+            System.out.println("SE RESERVO (" + pf.getNombre() + ") EXITOSAMENTE");
             return true;
         } else
             return false;
@@ -61,8 +59,6 @@ public class Fabrica {
         if (!componentes.isEmpty()) {
             componentes.forEach(c -> {
                 if (reservarComponente(c)) {
-                    System.out.println("SE RESERVO (" + c.getNombre() + ") EXITOSAMENTE");
-                    System.out.println("STOCK ACTUALIZADO");
                     this.stock.stockComponentes();
                 } else
                     fabricarComponente(c);
@@ -73,8 +69,6 @@ public class Fabrica {
         if (!componentesCompuestos.isEmpty()) {
             componentesCompuestos.forEach(cc -> {
                 if (reservarComponenteCompuesto(cc)) {
-                    System.out.println("SE RESERVO (" + cc.getNombre() + ") EXITOSAMENTE");
-                    System.out.println("STOCK ACTUALIZADO");
                     this.stock.stockComponentesCompuestos();
                 } else
                     fabricarComponenteCompuesto(cc);
@@ -90,6 +84,7 @@ public class Fabrica {
                 int cantidad = c.getStock() - c.getCantElementosConstruccion();
                 c.setEstado(true);
                 c.setStock(cantidad);
+                System.out.println("SE RESERVO (" + c.getNombre() + ") EXITOSAMENTE");
                 return true;
             } else {
                 System.out.println("EL COMPONENTE(" + c.getNombre() + ") NO POSEE EL STOCK SUFICIENTE");
@@ -108,15 +103,16 @@ public class Fabrica {
         c.setStock(c.getCantElementosConstruccion());
         this.stock.componentes.add(c);
         this.stock.stockComponentes();
+        reservarComponente(c);
     }
 
     public boolean reservarComponenteCompuesto(ComponenteCompuesto cc) {
         if (this.stock.componentesCompuestos.contains(cc)) {
             if (cc.getStock() >= cc.getCantElementosConstruccion()) {
-                System.out.println("STOCK ACTUAL");
                 int cantidad = cc.getStock() - cc.getCantElementosConstruccion();
                 cc.setEstado(true);
                 cc.setStock(cantidad);
+                System.out.println("SE RESERVO (" + cc.getNombre() + ") EXITOSAMENTE");
                 return true;
             } else {
                 System.out.println("EL COMPONENTE COMPUESTO(" + cc.getNombre() + ") NO POSEE EL STOCK SUFICIENTE");
@@ -139,8 +135,6 @@ public class Fabrica {
         if (!componentes.isEmpty()) {
             componentes.forEach(c -> {
                 if (reservarComponente(c)) {
-                    System.out.println("SE RESERVO (" + c.getNombre() + ") EXITOSAMENTE");
-                    System.out.println("STOCK ACTUALIZADO");
                     this.stock.stockComponentes();
                 } else
                     fabricarComponente(c);
@@ -151,8 +145,6 @@ public class Fabrica {
         if (!subComponenteCompuestos.isEmpty()) {
             subComponenteCompuestos.forEach(scc -> {
                 if (reservarSubComponenteComponente(scc)) {
-                    System.out.println("SE RESERVO (" + scc.getNombre() + ") EXITOSAMENTE");
-                    System.out.println("STOCK ACTUALIZADO");
                     this.stock.stockSubComponentesCompuestos();
                 } else
                     fabricarSubComponenteCompuesto(scc);
@@ -184,10 +176,10 @@ public class Fabrica {
     public boolean reservarSubComponenteComponente(SubComponenteCompuesto scc) {
         if (this.stock.subComponentesCompuestos.contains(scc)) {
             if (scc.getStock() >= scc.getCantElementosConstruccion()) {
-                System.out.println("STOCK ACTUAL");
                 int cantidad = scc.getStock() - scc.getCantElementosConstruccion();
                 scc.setEstado(true);
                 scc.setStock(cantidad);
+                System.out.println("SE RESERVO (" + scc.getNombre() + ") EXITOSAMENTE");
                 return true;
             } else {
                 System.out.println("EL SUBCOMPONENTE COMPUESTO(" + scc.getNombre() + ") NO POSEE EL STOCK SUFICIENTE");
@@ -208,32 +200,46 @@ public class Fabrica {
         if (!materiasPrimas.isEmpty()) {
             materiasPrimas.forEach(mp -> {
                 if (reservarMateriaPrima(mp, scc.getCantElementosConstruccion())) {
-                    System.out.println("SE RESERVO (" + mp.getNombre() + ") EXITOSAMENTE");
-                    System.out.println("STOCK ACTUALIZADO");
                     this.stock.stockMateriasPrimas();
-                } else
+                } else {
                     comprarMateriaPrima(mp, scc.getCantElementosConstruccion());
+                }
             });
+        } else
+            System.out.println("LISTA DE MATERIAS PRIMAS VACIA");
+
+        if (!materiasPrimas.isEmpty()) {
+            if (validarFabricacionSubComponenteCompuesto(materiasPrimas)) {
+                System.out.println("ACTUALMENTE SE RESERVARON LAS MATERIAS PRIMAS NECESARIAS PARA LA CONSTRUCCION DEL" +
+                        " SUBCOMPONENTE COMPUESTO(" + scc.getNombre() + ")");
+                scc.setStock(scc.getCantElementosConstruccion());
+                scc.setEstado(true);
+                this.stock.subComponentesCompuestos.add(scc);
+                this.stock.stockSubComponentesCompuestos();
+            } else
+                System.out.println("OCURRIO UN ERROR! validarFabricacionSubComponenteCompuesto");
         }
 
+    }
+
+    public boolean validarFabricacionSubComponenteCompuesto(Set<MateriaPrima> materiasPrimas) {
+        consultarEstado();
         int total = 0;
+
         if (!materiasPrimas.isEmpty()) {
             for (MateriaPrima materiaPrima : materiasPrimas) {
                 if (materiaPrima.isEstado() == true) {
                     total++;
+                    materiaPrima.setEstado(false);
                 }
-                materiaPrima.setEstado(false);
             }
         }
 
+        consultarEstado();
         if (total == materiasPrimas.size()) {
-            System.out.println("ACTUALMENTE SE RESERVARON LAS MATERIAS PRIMAS NECESARIAS PARA LA CONSTRUCCION DEL" +
-                    " SUBCOMPONENTE COMPUESTO(" + scc.getNombre() + ")");
-            scc.setStock(scc.getCantElementosConstruccion());
-            this.stock.subComponentesCompuestos.add(scc);
-            this.stock.stockSubComponentesCompuestos();
+           return true;
         } else
-            System.out.println("OCURRIO UN ERROR! fabricarSubComponenteCompuesto");
+            return false;
     }
 
     public boolean reservarMateriaPrima(MateriaPrima mp, int cantidad) {
@@ -242,6 +248,7 @@ public class Fabrica {
                 int valorStock = mp.getStock() - (mp.getCantElementosConstruccion() * cantidad);
                 mp.setEstado(true);
                 mp.setStock(valorStock);
+                System.out.println("SE RESERVO (" + mp.getNombre() + ") EXITOSAMENTE");
                 return true;
             } else {
                 System.out.println("LA MATERIA PRIMA(" + mp.getNombre() + ") NO POSEE EL STOCK SUFICIENTE");
@@ -258,10 +265,9 @@ public class Fabrica {
     public void comprarMateriaPrima(MateriaPrima mp, int cantidad) {
         System.out.println("A CONTINUACION SE COMPRARA LA MATERIA PRIMA(" + mp.getNombre() + ")");
         mp.setStock(mp.getCantElementosConstruccion() * cantidad);
-        mp.setEstado(true);
         this.stock.materiaPrimas.add(mp);
-        System.out.println("STOCK ACTUALIZADO");
         this.stock.stockMateriasPrimas();
+        reservarMateriaPrima(mp, cantidad);
     }
 
     public void agregarMateriaPrima(MateriaPrima mp, int cantidad) {
@@ -293,6 +299,7 @@ public class Fabrica {
     }
 
     public void consultarEstado() {
+        System.out.println("ESTADOS DEL STOCK:");
         this.stock.materiaPrimas.forEach(mp -> {
             System.out.println("MATERIA PRIMA(" + mp.getNombre() + ") | ESTADO: " + mp.isEstado());
         });
