@@ -12,71 +12,268 @@ public class Fabrica {
         this.stock = new Stock();
     }
 
-    public void cargarProductoFinal(ProductoFinal pr) {
-        this.stock.productosFinales.add(pr);
-        System.out.println("SE AGREGO EL PRODUCTO FINAL(" + pr.getNombre() + ")");
-        this.stock.stockProductosFinales();
+    /**
+     * Añade un producto final al stock y actualiza el estado del stock.
+     *
+     * @param pf El producto final que se va a añadir.
+     *
+     * <p>Este método realiza las siguientes acciones:</p>
+     * <ul>
+     *   <li>Añade el producto final a la lista de productos finales en el stock.</li>
+     *   <li>Muestra un mensaje indicando que el producto final ha sido añadido, incluyendo su nombre.</li>
+     *   <li>Actualiza el stock de productos finales.</li>
+     *   <li>Consulta y muestra el estado total del stock, incluyendo las reservas de los diferentes elementos.</li>
+     * </ul>
+     */
+    public void cargarProductoFinal(ProductoFinal pf) {
+        stock.productosFinales.add(pf);
+        System.out.println("SE AGREGO EL PRODUCTO FINAL(" + pf.getNombre() + ")");
+        stock.stockProductosFinales();
+        stock.consultarEstadoTotal();
     }
+
+    /**
+     * Reserva un producto final basándose en la opción proporcionada.
+     *
+     * @param pf El producto final que se va a reservar.
+     * @param opcion La opción para la reserva del producto final.
+     *               <ul>
+     *                 <li>Si la opción es 1, intenta reservar o fabricar el producto final si no hay stock.</li>
+     *                 <li>Si la opción es 2, simplemente verifica y reserva el stock disponible.</li>
+     *                 <li>Cualquier otra opción se considera inválida y muestra un mensaje de opción inválida.</li>
+     *               </ul>
+     *
+     * <p>Este método realiza las siguientes acciones según la opción proporcionada:</p>
+     * <ul>
+     *   <li>Si la opción es 1:
+     *     <ul>
+     *       <li>Verifica si el producto final existe en el stock.</li>
+     *       <li>Si el producto existe, intenta reservarlo. Si no hay stock disponible, intenta fabricar los componentes necesarios.</li>
+     *       <li>Si el producto no existe en el stock, intenta fabricar los componentes necesarios para su fabricación.</li>
+     *     </ul>
+     *   </li>
+     *   <li>Si la opción es 2:
+     *     <ul>
+     *       <li>Verifica si hay stock disponible para el producto final.</li>
+     *       <li>Si hay stock disponible, lo reserva. Si no hay stock, muestra un mensaje indicando que no se puede reservar ni fabricar.</li>
+     *     </ul>
+     *   </li>
+     *   <li>Si la opción no es ni 1 ni 2:
+     *     <ul>
+     *       <li>Muestra un mensaje indicando que la opción es inválida.</li>
+     *     </ul>
+     *   </li>
+     * </ul>
+     */
 
     public void reservarProductoFinal(ProductoFinal pf, int opcion) {
         if (opcion == 1) {
             if (stock.productosFinales.contains(pf)) {
                 if (stockDisponibleProductoFinal(pf)) {
-                    this.stock.stockProductosFinales();
+                    stock.stockProductosFinales();
+                    pf.setEstado(false);
                 } else {
                     System.out.println("EL PRODUCTO FINAL(" + pf.getNombre() + ") NO POSEE STOCK");
+                    System.out.println();
                     reservarElementos(pf);
                 }
             } else {
                 System.out.println("EL PRODUCTO FINAL(" + pf.getNombre() + ") NO EXISTE DENTRO DEL STOCK");
+                System.out.println();
                 reservarElementos(pf);
             }
-        } else {
+        } else if (opcion == 2){
             if (stockDisponibleProductoFinal(pf)) {
-                this.stock.stockProductosFinales();
+                stock.stockProductosFinales();
             } else {
                 System.out.println("EL PRODUCTO FINAL(" + pf.getNombre() + ") NO POSEE STOCK");
                 System.out.println("NO SE PUEDE RESERVAR, NI FABRICAR");
             }
-        }
+        } else
+            System.out.println("OPCION INVALIDA");
     }
 
+    /**
+     * Verifica si hay stock disponible de un producto final y, en caso afirmativo,
+     * reserva una unidad del mismo y actualiza su estado.
+     *
+     * @param pf El producto final que se va a verificar y reservar.
+     * @return {@code true} si se pudo reservar una unidad del producto final, {@code false} en caso contrario.
+     *
+     * <p>Este método realiza las siguientes acciones:</p>
+     * <ul>
+     *   <li>Verifica si el stock del producto final es mayor que 0.</li>
+     *   <li>Si hay stock disponible, disminuye el stock del producto final en una unidad.</li>
+     *   <li>Actualiza el estado del producto final a reservado (true).</li>
+     *   <li>Muestra un mensaje indicando que el producto final ha sido reservado exitosamente, incluyendo su nombre.</li>
+     *   <li>Actualiza y muestra el estado total del stock.</li>
+     *   <li>Retorna {@code true} si la reserva fue exitosa.</li>
+     *   <li>Retorna {@code false} si no hay stock disponible.</li>
+     * </ul>
+     */
     public boolean stockDisponibleProductoFinal(ProductoFinal pf) {
         if (pf.getStock() > 0) {
             int cantidad = pf.getStock() - 1;
             pf.setStock(cantidad);
+            pf.setEstado(true);
             System.out.println("SE RESERVO (" + pf.getNombre() + ") EXITOSAMENTE");
+            stock.consultarEstadoTotal();
             return true;
         } else
             return false;
     }
 
+    /**
+     * Reserva los elementos necesarios para la construcción de un producto final.
+     *
+     * @param pf El producto final para el cual se van a reservar los elementos.
+     *
+     * <p>Este método realiza las siguientes acciones:</p>
+     * <ul>
+     *   <li>Muestra un mensaje indicando que se evaluará el stock de los elementos necesarios para construir el producto final.</li>
+     *   <li>Verifica y reserva los componentes simples del producto final. Si un componente no está disponible, se intenta fabricar.</li>
+     *   <li>Verifica y reserva los componentes compuestos del producto final. Si un componente compuesto no está disponible, se intenta fabricar.</li>
+     *   <li>Si ambos tipos de componentes están presentes y se pueden reservar o fabricar, se actualiza el stock del producto final y se muestra un mensaje de éxito.</li>
+     *   <li>Si ocurre un error en el proceso de fabricación del producto final, se muestra un mensaje de error.</li>
+     * </ul>
+     *
+     * <p>Este método depende de los siguientes métodos auxiliares:</p>
+     * <ul>
+     *   <li>{@link #reservarComponente(Componente)}: Reserva un componente simple.</li>
+     *   <li>{@link #fabricarComponente(Componente)}: Fabrica un componente simple.</li>
+     *   <li>{@link #reservarComponenteCompuesto(ComponenteCompuesto)}: Reserva un componente compuesto.</li>
+     *   <li>{@link #fabricarComponenteCompuesto(ComponenteCompuesto)}: Fabrica un componente compuesto.</li>
+     *   <li>{@link #validarFabricacionProductoFinal(ProductoFinal)}: Valida la fabricación del producto final.</li>
+     *   <li>{@link #reservarProductoFinal(ProductoFinal, int)}: Reserva la cantidad especificada de un producto final.</li>
+     * </ul>
+     */
+
     public void reservarElementos(ProductoFinal pf) {
         System.out.println("A CONTINUACION SE EVALUARA EL STOCK DE LOS ELEMENTOS NECESARIOS PARA LA CONSTRUCCION DEL PRODUCTO FINAL(" + pf.getNombre() + ")");
-        Set<Componente> componentes = pf.getListaComponentes();
-        Set<ComponenteCompuesto> componentesCompuestos = pf.getListaComponentesCompuestos();
+        System.out.println();
 
-        if (!componentes.isEmpty()) {
-            componentes.forEach(c -> {
+        if (!pf.getListaComponentes().isEmpty()) {
+            pf.getListaComponentes().forEach(c -> {
                 if (reservarComponente(c)) {
-                    this.stock.stockComponentes();
+                    stock.stockComponentes();
                 } else
                     fabricarComponente(c);
             });
         } else
             System.out.println("LISTA DE COMPONENTES VACIA");
 
-        if (!componentesCompuestos.isEmpty()) {
-            componentesCompuestos.forEach(cc -> {
+        if (!pf.getListaComponentesCompuestos().isEmpty()) {
+            pf.getListaComponentesCompuestos().forEach(cc -> {
                 if (reservarComponenteCompuesto(cc)) {
-                    this.stock.stockComponentesCompuestos();
+                    stock.stockComponentesCompuestos();
                 } else
                     fabricarComponenteCompuesto(cc);
             });
         } else
             System.out.println("LISTA DE COMPONENTES COMPUESTOS VACIA");
 
+        if (validarFabricacionProductoFinal(pf) == true) {
+            System.out.println("ACTUALMENTE SE RESERVARON LAS ELEMENTOS NECESARIOS PARA LA CONSTRUCCION DEL" +
+                    " PRODUCTO FINAL(" + pf.getNombre() + ")");
+            pf.setStock(1);
+            stock.stockProductosFinales();
+            reservarProductoFinal(pf, 1);
+        } else
+            System.out.println("OCURRIO UN ERROR AL FABRICAR EL PRODUCTO FINAL!");
     }
+
+    /**
+     * Valida si se pueden reservar todos los componentes necesarios para la fabricación de un producto final.
+     *
+     * @param pf El producto final para el cual se va a validar la fabricación.
+     * @return {@code true} si todos los componentes necesarios están reservados y disponibles para la fabricación, {@code false} en caso contrario.
+     *
+     * <p>Este método realiza las siguientes acciones:</p>
+     * <ul>
+     *   <li>Inicializa un contador para el total de componentes reservados.</li>
+     *   <li>Verifica los componentes simples y, si están reservados (estado es {@code true}), incrementa el contador y cambia su estado a no reservado (estado es {@code false}).</li>
+     *   <li>Verifica los componentes compuestos y, si están reservados (estado es {@code true}), incrementa el contador y cambia su estado a no reservado (estado es {@code false}).</li>
+     *   <li>Comprueba si todos los componentes (simples y compuestos) necesarios para la fabricación están reservados.</li>
+     *   <li>Retorna {@code true} si todos los componentes necesarios están reservados; de lo contrario, retorna {@code false}.</li>
+     * </ul>
+     */
+
+    public boolean validarFabricacionProductoFinal(ProductoFinal pf) {
+        int total = 0;
+
+        boolean condicionComponentes = false;
+        if (!pf.getListaComponentes().isEmpty()) {
+            for (Componente c : pf.getListaComponentes()) {
+                if (c.isEstado() == true) {
+                    total++;
+                    c.setEstado(false);
+                }
+            }
+            condicionComponentes = true;
+        }
+
+        boolean condicionComponenteCompuesto = false;
+        if (!pf.getListaComponentesCompuestos().isEmpty()) {
+            for (ComponenteCompuesto cc : pf.getListaComponentesCompuestos()) {
+                if (cc.isEstado() == true) {
+                    total++;
+                    cc.setEstado(false);
+                }
+            }
+            condicionComponenteCompuesto = true;
+        }
+
+        boolean fabricar = false;
+        if (condicionComponentes == true && condicionComponenteCompuesto == true) {
+            if (total == pf.getListaComponentes().size() + pf.getListaComponentesCompuestos().size())
+                fabricar = true;
+        } else if (condicionComponentes == true && condicionComponenteCompuesto == false) {
+            if (total == pf.getListaComponentes().size())
+                fabricar = true;
+        } else if (condicionComponentes == false && condicionComponenteCompuesto == true) {
+            if (total == pf.getListaComponentesCompuestos().size())
+                fabricar = true;
+        }
+
+        if (fabricar == true) {
+            return true;
+        } else
+            return false;
+    }
+
+    /**
+     * Reserva un componente verificando si hay suficiente stock disponible.
+     *
+     * @param c El componente que se va a reservar.
+     * @return {@code true} si el componente se reservó exitosamente, {@code false} en caso contrario.
+     *
+     * <p>Este método realiza las siguientes acciones:</p>
+     * <ul>
+     *   <li>Verifica si el componente existe en el stock.</li>
+     *   <li>Si el componente existe y su stock es suficiente para cubrir la cantidad necesaria para la construcción:
+     *     <ul>
+     *       <li>Disminuye el stock del componente por la cantidad necesaria para la construcción.</li>
+     *       <li>Actualiza el estado del componente a reservado (estado es {@code true}).</li>
+     *       <li>Muestra un mensaje indicando que el componente se reservó exitosamente.</li>
+     *       <li>Actualiza y muestra el estado total del stock.</li>
+     *       <li>Retorna {@code true}.</li>
+     *     </ul>
+     *   </li>
+     *   <li>Si el componente no tiene suficiente stock:
+     *     <ul>
+     *       <li>Muestra un mensaje indicando que el componente no tiene el stock suficiente.</li>
+     *       <li>Actualiza y muestra el stock de componentes.</li>
+     *       <li>Retorna {@code false}.</li>
+     *     </ul>
+     *   </li>
+     *   <li>Si el componente no existe en el stock:
+     *     <ul>
+     *       <li>Muestra un mensaje indicando que el componente no existe en el stock.</li>
+     *       <li>Retorna {@code false}.</li>
+     *     </ul>
+     *   </li>
+     * </ul>
+     */
 
     public boolean reservarComponente(Componente c) {
         if (this.stock.componentes.contains(c)) {
@@ -85,6 +282,7 @@ public class Fabrica {
                 c.setEstado(true);
                 c.setStock(cantidad);
                 System.out.println("SE RESERVO (" + c.getNombre() + ") EXITOSAMENTE");
+                this.stock.consultarEstadoTotal();
                 return true;
             } else {
                 System.out.println("EL COMPONENTE(" + c.getNombre() + ") NO POSEE EL STOCK SUFICIENTE");
@@ -93,10 +291,24 @@ public class Fabrica {
             }
         } else {
             System.out.println("EL COMPONENTE(" + c.getNombre() + ") NO EXISTE DENTRO DEL STOCK");
-            this.stock.stockComponentes();
             return false;
         }
     }
+
+    /**
+     * Fabrica un componente y lo agrega al stock.
+     *
+     * @param c El componente que se va a fabricar.
+     *
+     * <p>Este método realiza las siguientes acciones:</p>
+     * <ul>
+     *   <li>Muestra un mensaje indicando que se va a fabricar el componente.</li>
+     *   <li>Establece el stock del componente a la cantidad necesaria para su construcción.</li>
+     *   <li>Agrega el componente al stock de componentes.</li>
+     *   <li>Actualiza y muestra el estado del stock de componentes.</li>
+     *   <li>Intenta reservar el componente fabricado llamando al método {@link #reservarComponente(Componente)}.</li>
+     * </ul>
+     */
 
     public void fabricarComponente(Componente c) {
         System.out.println("A CONTINUACION SE FABRICARA EL COMPONENTE(" + c.getNombre() + ")");
@@ -106,6 +318,40 @@ public class Fabrica {
         reservarComponente(c);
     }
 
+    /**
+     * Reserva un componente compuesto verificando si hay suficiente stock disponible.
+     *
+     * @param cc El componente compuesto que se va a reservar.
+     * @return {@code true} si el componente compuesto se reservó exitosamente, {@code false} en caso contrario.
+     *
+     * <p>Este método realiza las siguientes acciones:</p>
+     * <ul>
+     *   <li>Verifica si el componente compuesto existe en el stock.</li>
+     *   <li>Si el componente compuesto existe y su stock es suficiente para cubrir la cantidad necesaria para la construcción:
+     *     <ul>
+     *       <li>Disminuye el stock del componente compuesto por la cantidad necesaria para la construcción.</li>
+     *       <li>Actualiza el estado del componente compuesto a reservado (estado es {@code true}).</li>
+     *       <li>Muestra un mensaje indicando que el componente compuesto se reservó exitosamente.</li>
+     *       <li>Actualiza y muestra el estado total del stock.</li>
+     *       <li>Retorna {@code true}.</li>
+     *     </ul>
+     *   </li>
+     *   <li>Si el componente compuesto no tiene suficiente stock:
+     *     <ul>
+     *       <li>Muestra un mensaje indicando que el componente compuesto no tiene el stock suficiente.</li>
+     *       <li>Actualiza y muestra el stock de componentes compuestos.</li>
+     *       <li>Retorna {@code false}.</li>
+     *     </ul>
+     *   </li>
+     *   <li>Si el componente compuesto no existe en el stock:
+     *     <ul>
+     *       <li>Muestra un mensaje indicando que el componente compuesto no existe en el stock.</li>
+     *       <li>Retorna {@code false}.</li>
+     *     </ul>
+     *   </li>
+     * </ul>
+     */
+
     public boolean reservarComponenteCompuesto(ComponenteCompuesto cc) {
         if (this.stock.componentesCompuestos.contains(cc)) {
             if (cc.getStock() >= cc.getCantElementosConstruccion()) {
@@ -113,6 +359,7 @@ public class Fabrica {
                 cc.setEstado(true);
                 cc.setStock(cantidad);
                 System.out.println("SE RESERVO (" + cc.getNombre() + ") EXITOSAMENTE");
+                this.stock.consultarEstadoTotal();
                 return true;
             } else {
                 System.out.println("EL COMPONENTE COMPUESTO(" + cc.getNombre() + ") NO POSEE EL STOCK SUFICIENTE");
@@ -121,19 +368,16 @@ public class Fabrica {
             }
         } else {
             System.out.println("EL COMPONENTE COMPUESTO(" + cc.getNombre() + ") NO EXISTE DENTRO DEL STOCK");
-            this.stock.stockComponentesCompuestos();
             return false;
         }
     }
 
     public void fabricarComponenteCompuesto(ComponenteCompuesto cc) {
         System.out.println("A CONTINUACION SE EVALUARA EL STOCK DE LOS ELEMENTOS NECESARIOS PARA LA CONSTRUCCION DEL COMPONENTE COMPUESTO(" + cc.getNombre() + ")");
+        System.out.println();
 
-        Set<Componente> componentes = cc.getListaComponentes();
-        Set<SubComponenteCompuesto> subComponenteCompuestos = cc.getListaSubComponentesCompuestos();
-
-        if (!componentes.isEmpty()) {
-            componentes.forEach(c -> {
+        if (!cc.getListaComponentes().isEmpty()) {
+            cc.getListaComponentes().forEach(c -> {
                 if (reservarComponente(c)) {
                     this.stock.stockComponentes();
                 } else
@@ -142,8 +386,8 @@ public class Fabrica {
         } else
             System.out.println("LISTA DE COMPONENTES VACIA");
 
-        if (!subComponenteCompuestos.isEmpty()) {
-            subComponenteCompuestos.forEach(scc -> {
+        if (!cc.getListaSubComponentesCompuestos().isEmpty()) {
+            cc.getListaSubComponentesCompuestos().forEach(scc -> {
                 if (reservarSubComponenteComponente(scc)) {
                     this.stock.stockSubComponentesCompuestos();
                 } else
@@ -152,25 +396,58 @@ public class Fabrica {
         } else
             System.out.println("LISTA DE SUBCOMPONENTES COMPUESTOS VACIA");
 
-
-       /* int total = 0;
-        if (!componentes.isEmpty()) {
-            for (Componente componente : componentes) {
-                if (reservarComponente(componente))
-                    total++;
-            }
-        }
-        if (!subComponenteCompuestos.isEmpty()) {
-            for (SubComponenteCompuesto scc : subComponenteCompuestos) {
-                if (reservarSubComponenteComponente(scc))
-                    total++;
-            }
-        }
-
-        if (total == (componentes.size() + subComponenteCompuestos.size())){
-            System.out.println("ACTUALMENTE SE CONSTRUYERON Y RESERVARON LAS ELEMENTOS NECESARIOS PARA LA CONSTRUCCION DEL" +
+        if (validarFabricacionComponenteCompuesto(cc) == true) {
+            System.out.println("ACTUALMENTE SE RESERVARON LAS ELEMENTOS NECESARIOS PARA LA CONSTRUCCION DEL" +
                     "COMPONENTE COMPUESTO(" + cc.getNombre() + ")");
-        }*/
+            cc.setStock(cc.getCantElementosConstruccion());
+            this.stock.componentesCompuestos.add(cc);
+            this.stock.stockComponentesCompuestos();
+            reservarComponenteCompuesto(cc);
+        } else
+            System.out.println("OCURRIO UN ERROR AL FABRICAR EL COMPONENTE COMPUESTO");
+    }
+
+    public boolean validarFabricacionComponenteCompuesto(ComponenteCompuesto cc) {
+        int total = 0;
+
+        boolean condicionComponentes = false;
+        if (!cc.getListaComponentes().isEmpty()) {
+            for (Componente c : cc.getListaComponentes()) {
+                if (c.isEstado() == true) {
+                    total++;
+                    c.setEstado(false);
+                }
+            }
+            condicionComponentes = true;
+        }
+
+        boolean condicionSubComponentes = false;
+        if (!cc.getListaSubComponentesCompuestos().isEmpty()) {
+            for (SubComponenteCompuesto scc : cc.getListaSubComponentesCompuestos()) {
+                if (scc.isEstado() == true) {
+                    total++;
+                    scc.setEstado(false);
+                }
+            }
+            condicionSubComponentes = true;
+        }
+
+        boolean fabricar = false;
+        if (condicionComponentes == true && condicionSubComponentes == true) {
+            if (total == cc.getListaComponentes().size() + cc.getListaSubComponentesCompuestos().size())
+                fabricar = true;
+        } else if (condicionComponentes == true && condicionSubComponentes == false) {
+            if (total == cc.getListaComponentes().size())
+                fabricar = true;
+        } else if (condicionComponentes == false && condicionSubComponentes == true) {
+            if (total == cc.getListaSubComponentesCompuestos().size())
+                fabricar = true;
+        }
+
+        if (fabricar == true) {
+            return true;
+        } else
+            return false;
     }
 
     public boolean reservarSubComponenteComponente(SubComponenteCompuesto scc) {
@@ -180,6 +457,7 @@ public class Fabrica {
                 scc.setEstado(true);
                 scc.setStock(cantidad);
                 System.out.println("SE RESERVO (" + scc.getNombre() + ") EXITOSAMENTE");
+                this.stock.consultarEstadoTotal();
                 return true;
             } else {
                 System.out.println("EL SUBCOMPONENTE COMPUESTO(" + scc.getNombre() + ") NO POSEE EL STOCK SUFICIENTE");
@@ -195,10 +473,10 @@ public class Fabrica {
 
     public void fabricarSubComponenteCompuesto(SubComponenteCompuesto scc) {
         System.out.println("A CONTINUACION SE EVALUARA EL STOCK DE LOS ELEMENTOS NECESARIOS PARA LA CONSTRUCCION DEL SUBCOMPONENTE COMPUESTO(" + scc.getNombre() + ")");
-        Set<MateriaPrima> materiasPrimas = scc.getListaMateriasPrimas();
+        System.out.println();
 
-        if (!materiasPrimas.isEmpty()) {
-            materiasPrimas.forEach(mp -> {
+        if (!scc.getListaMateriasPrimas().isEmpty()) {
+            scc.getListaMateriasPrimas().forEach(mp -> {
                 if (reservarMateriaPrima(mp, scc.getCantElementosConstruccion())) {
                     this.stock.stockMateriasPrimas();
                 } else {
@@ -208,36 +486,35 @@ public class Fabrica {
         } else
             System.out.println("LISTA DE MATERIAS PRIMAS VACIA");
 
-        if (!materiasPrimas.isEmpty()) {
-            if (validarFabricacionSubComponenteCompuesto(materiasPrimas)) {
+        if (!scc.getListaMateriasPrimas().isEmpty()) {
+            if (validarFabricacionSubComponenteCompuesto(scc)) {
                 System.out.println("ACTUALMENTE SE RESERVARON LAS MATERIAS PRIMAS NECESARIAS PARA LA CONSTRUCCION DEL" +
                         " SUBCOMPONENTE COMPUESTO(" + scc.getNombre() + ")");
                 scc.setStock(scc.getCantElementosConstruccion());
                 scc.setEstado(true);
                 this.stock.subComponentesCompuestos.add(scc);
                 this.stock.stockSubComponentesCompuestos();
+                reservarSubComponenteComponente(scc);
             } else
-                System.out.println("OCURRIO UN ERROR! validarFabricacionSubComponenteCompuesto");
+                System.out.println("OCURRIO UN ERROR AL FABRICAR EL SUB COMPONENTE COMPUESTO");
         }
 
     }
 
-    public boolean validarFabricacionSubComponenteCompuesto(Set<MateriaPrima> materiasPrimas) {
-        consultarEstado();
+    public boolean validarFabricacionSubComponenteCompuesto(SubComponenteCompuesto scc) {
         int total = 0;
 
-        if (!materiasPrimas.isEmpty()) {
-            for (MateriaPrima materiaPrima : materiasPrimas) {
-                if (materiaPrima.isEstado() == true) {
+        if (!scc.getListaMateriasPrimas().isEmpty()) {
+            for (MateriaPrima mp : scc.getListaMateriasPrimas()) {
+                if (mp.isEstado() == true) {
                     total++;
-                    materiaPrima.setEstado(false);
+                    mp.setEstado(false);
                 }
             }
         }
 
-        consultarEstado();
-        if (total == materiasPrimas.size()) {
-           return true;
+        if (total == scc.getListaMateriasPrimas().size()) {
+            return true;
         } else
             return false;
     }
@@ -249,6 +526,7 @@ public class Fabrica {
                 mp.setEstado(true);
                 mp.setStock(valorStock);
                 System.out.println("SE RESERVO (" + mp.getNombre() + ") EXITOSAMENTE");
+                this.stock.consultarEstadoTotal();
                 return true;
             } else {
                 System.out.println("LA MATERIA PRIMA(" + mp.getNombre() + ") NO POSEE EL STOCK SUFICIENTE");
@@ -257,7 +535,6 @@ public class Fabrica {
             }
         } else {
             System.out.println("LA MATERIA PRIMA(" + mp.getNombre() + ") NO EXISTE DENTRO DEL STOCK");
-            this.stock.stockMateriasPrimas();
             return false;
         }
     }
@@ -299,20 +576,7 @@ public class Fabrica {
     }
 
     public void consultarEstado() {
-        System.out.println("ESTADOS DEL STOCK:");
-        this.stock.materiaPrimas.forEach(mp -> {
-            System.out.println("MATERIA PRIMA(" + mp.getNombre() + ") | ESTADO: " + mp.isEstado());
-        });
-        this.stock.componentes.forEach(c -> {
-            System.out.println("COMPONENTE(" + c.getNombre() + ") | ESTADO: " + c.isEstado());
-        });
-        this.stock.componentesCompuestos.forEach(cc -> {
-            System.out.println("COMPONENTE COMPUESTO(" + cc.getNombre() + ") | ESTADO: " + cc.isEstado());
-        });
-        this.stock.subComponentesCompuestos.forEach(scc -> {
-            System.out.println("SUBCOMPONENTE COMPUESTO(" + scc.getNombre() + ") | ESTADO: " + scc.isEstado());
-            ;
-        });
+        this.stock.consultarEstadoTotal();
     }
 
     public void mostrarStockTotal() {
