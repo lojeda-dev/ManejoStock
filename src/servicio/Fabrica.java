@@ -372,6 +372,42 @@ public class Fabrica {
         }
     }
 
+    /**
+     * Fabrica un componente compuesto evaluando el stock de los elementos necesarios.
+     *
+     * @param cc El componente compuesto que se desea fabricar.
+     *
+     * <p>Este método realiza las siguientes acciones:</p>
+     * <ul>
+     *   <li>Verifica si hay componentes necesarios en el stock para la construcción del componente compuesto.</li>
+     *   <li>Para cada componente:
+     *     <ul>
+     *       <li>Si el componente puede ser reservado, actualiza el stock.</li>
+     *       <li>Si el componente no puede ser reservado, lo fabrica.</li>
+     *     </ul>
+     *   </li>
+     *   <li>Verifica si hay subcomponentes compuestos necesarios en el stock para la construcción del componente compuesto.</li>
+     *   <li>Para cada subcomponente compuesto:
+     *     <ul>
+     *       <li>Si el subcomponente compuesto puede ser reservado, actualiza el stock.</li>
+     *       <li>Si el subcomponente compuesto no puede ser reservado, lo fabrica.</li>
+     *     </ul>
+     *   </li>
+     *   <li>Valida la fabricación del componente compuesto:</li>
+     *   <ul>
+     *     <li>Si la validación es exitosa:
+     *       <ul>
+     *         <li>Actualiza el stock del componente compuesto.</li>
+     *         <li>Agrega el componente compuesto al stock.</li>
+     *         <li>Actualiza el stock total de componentes compuestos.</li>
+     *         <li>Reserva el componente compuesto.</li>
+     *       </ul>
+     *     </li>
+     *     <li>Si la validación no es exitosa, muestra un mensaje de error.</li>
+     *   </ul>
+     * </ul>
+     */
+
     public void fabricarComponenteCompuesto(ComponenteCompuesto cc) {
         System.out.println("A CONTINUACION SE EVALUARA EL STOCK DE LOS ELEMENTOS NECESARIOS PARA LA CONSTRUCCION DEL COMPONENTE COMPUESTO(" + cc.getNombre() + ")");
         System.out.println();
@@ -406,6 +442,43 @@ public class Fabrica {
         } else
             System.out.println("OCURRIO UN ERROR AL FABRICAR EL COMPONENTE COMPUESTO");
     }
+
+    /**
+     * Valida la fabricación de un componente compuesto verificando el estado de sus componentes y subcomponentes.
+     *
+     * @param cc El componente compuesto cuya fabricación se va a validar.
+     * @return {@code true} si todos los componentes y subcomponentes necesarios están disponibles y en estado válido, {@code false} en caso contrario.
+     *
+     * <p>Este método realiza las siguientes acciones:</p>
+     * <ul>
+     *   <li>Inicializa una variable {@code total} para contar los componentes y subcomponentes válidos.</li>
+     *   <li>Verifica si la lista de componentes no está vacía:</li>
+     *   <ul>
+     *     <li>Para cada componente:
+     *       <ul>
+     *         <li>Si el componente está en estado válido ({@code true}), incrementa {@code total} y cambia su estado a no válido ({@code false}).</li>
+     *       </ul>
+     *     </li>
+     *     <li>Actualiza la variable {@code condicionComponentes} a {@code true}.</li>
+     *   </ul>
+     *   <li>Verifica si la lista de subcomponentes compuestos no está vacía:</li>
+     *   <ul>
+     *     <li>Para cada subcomponente compuesto:
+     *       <ul>
+     *         <li>Si el subcomponente compuesto está en estado válido ({@code true}), incrementa {@code total} y cambia su estado a no válido ({@code false}).</li>
+     *       </ul>
+     *     </li>
+     *     <li>Actualiza la variable {@code condicionSubComponentes} a {@code true}.</li>
+     *   </ul>
+     *   <li>Determina si se puede fabricar el componente compuesto basado en las siguientes condiciones:</li>
+     *   <ul>
+     *     <li>Si ambas condiciones ({@code condicionComponentes} y {@code condicionSubComponentes}) son verdaderas, verifica si {@code total} es igual al tamaño combinado de las listas de componentes y subcomponentes compuestos.</li>
+     *     <li>Si solo {@code condicionComponentes} es verdadera, verifica si {@code total} es igual al tamaño de la lista de componentes.</li>
+     *     <li>Si solo {@code condicionSubComponentes} es verdadera, verifica si {@code total} es igual al tamaño de la lista de subcomponentes compuestos.</li>
+     *   </ul>
+     *   <li>Si alguna de las condiciones anteriores es verdadera, retorna {@code true}; de lo contrario, retorna {@code false}.</li>
+     * </ul>
+     */
 
     public boolean validarFabricacionComponenteCompuesto(ComponenteCompuesto cc) {
         int total = 0;
@@ -450,6 +523,41 @@ public class Fabrica {
             return false;
     }
 
+    /**
+     * Reserva un subcomponente compuesto verificando si hay suficiente stock disponible.
+     *
+     * @param scc El subcomponente compuesto que se va a reservar.
+     * @return {@code true} si el subcomponente compuesto se reservó exitosamente, {@code false} en caso contrario.
+     *
+     * <p>Este método realiza las siguientes acciones:</p>
+     * <ul>
+     *   <li>Verifica si el subcomponente compuesto existe en el stock.</li>
+     *   <li>Si el subcomponente compuesto existe y su stock es suficiente para cubrir la cantidad necesaria para la construcción:
+     *     <ul>
+     *       <li>Disminuye el stock del subcomponente compuesto por la cantidad necesaria para la construcción.</li>
+     *       <li>Actualiza el estado del subcomponente compuesto a reservado (estado es {@code true}).</li>
+     *       <li>Muestra un mensaje indicando que el subcomponente compuesto se reservó exitosamente.</li>
+     *       <li>Actualiza y muestra el estado total del stock.</li>
+     *       <li>Retorna {@code true}.</li>
+     *     </ul>
+     *   </li>
+     *   <li>Si el subcomponente compuesto no tiene suficiente stock:
+     *     <ul>
+     *       <li>Muestra un mensaje indicando que el subcomponente compuesto no tiene el stock suficiente.</li>
+     *       <li>Actualiza y muestra el stock de subcomponentes compuestos.</li>
+     *       <li>Retorna {@code false}.</li>
+     *     </ul>
+     *   </li>
+     *   <li>Si el subcomponente compuesto no existe en el stock:
+     *     <ul>
+     *       <li>Muestra un mensaje indicando que el subcomponente compuesto no existe en el stock.</li>
+     *       <li>Actualiza y muestra el stock de subcomponentes compuestos.</li>
+     *       <li>Retorna {@code false}.</li>
+     *     </ul>
+     *   </li>
+     * </ul>
+     */
+
     public boolean reservarSubComponenteComponente(SubComponenteCompuesto scc) {
         if (this.stock.subComponentesCompuestos.contains(scc)) {
             if (scc.getStock() >= scc.getCantElementosConstruccion()) {
@@ -470,6 +578,39 @@ public class Fabrica {
             return false;
         }
     }
+
+    /**
+     * Fabrica un subcomponente compuesto evaluando el stock de las materias primas necesarias.
+     *
+     * @param scc El subcomponente compuesto que se desea fabricar.
+     *
+     * <p>Este método realiza las siguientes acciones:</p>
+     * <ul>
+     *   <li>Imprime un mensaje indicando que se evaluará el stock de las materias primas necesarias para la construcción del subcomponente compuesto.</li>
+     *   <li>Verifica si hay materias primas necesarias en el stock para la construcción del subcomponente compuesto.</li>
+     *   <li>Para cada materia prima:
+     *     <ul>
+     *       <li>Si la materia prima puede ser reservada, actualiza el stock.</li>
+     *       <li>Si la materia prima no puede ser reservada, la compra.</li>
+     *     </ul>
+     *   </li>
+     *   <li>Si la lista de materias primas no está vacía, valida la fabricación del subcomponente compuesto:</li>
+     *     <ul>
+     *       <li>Si la validación es exitosa:
+     *         <ul>
+     *           <li>Imprime un mensaje indicando que se reservaron las materias primas necesarias.</li>
+     *           <li>Actualiza el stock del subcomponente compuesto.</li>
+     *           <li>Actualiza el estado del subcomponente compuesto a reservado (estado es {@code true}).</li>
+     *           <li>Agrega el subcomponente compuesto al stock.</li>
+     *           <li>Actualiza y muestra el stock total de subcomponentes compuestos.</li>
+     *           <li>Reserva el subcomponente compuesto.</li>
+     *         </ul>
+     *       </li>
+     *       <li>Si la validación no es exitosa, muestra un mensaje de error.</li>
+     *     </ul>
+     *   <li>Si la lista de materias primas está vacía, imprime un mensaje indicando que la lista está vacía.</li>
+     * </ul>
+     */
 
     public void fabricarSubComponenteCompuesto(SubComponenteCompuesto scc) {
         System.out.println("A CONTINUACION SE EVALUARA EL STOCK DE LOS ELEMENTOS NECESARIOS PARA LA CONSTRUCCION DEL SUBCOMPONENTE COMPUESTO(" + scc.getNombre() + ")");
@@ -498,8 +639,27 @@ public class Fabrica {
             } else
                 System.out.println("OCURRIO UN ERROR AL FABRICAR EL SUB COMPONENTE COMPUESTO");
         }
-
     }
+
+    /**
+     * Valida la fabricación de un subcomponente compuesto verificando el estado de sus materias primas.
+     *
+     * @param scc El subcomponente compuesto cuya fabricación se va a validar.
+     * @return {@code true} si todas las materias primas necesarias están disponibles y en estado válido, {@code false} en caso contrario.
+     *
+     * <p>Este método realiza las siguientes acciones:</p>
+     * <ul>
+     *   <li>Inicializa una variable {@code total} para contar las materias primas válidas.</li>
+     *   <li>Verifica si la lista de materias primas no está vacía.</li>
+     *   <li>Para cada materia prima en la lista:
+     *     <ul>
+     *       <li>Si el estado de la materia prima es verdadero ({@code true}), incrementa el contador {@code total} y actualiza el estado de la materia prima a falso ({@code false}).</li>
+     *     </ul>
+     *   </li>
+     *   <li>Compara el contador {@code total} con el tamaño de la lista de materias primas.</li>
+     *   <li>Retorna {@code true} si todos los elementos en la lista de materias primas son válidos, {@code false} en caso contrario.</li>
+     * </ul>
+     */
 
     public boolean validarFabricacionSubComponenteCompuesto(SubComponenteCompuesto scc) {
         int total = 0;
@@ -518,6 +678,42 @@ public class Fabrica {
         } else
             return false;
     }
+
+    /**
+     * Reserva una materia prima verificando si hay suficiente stock disponible.
+     *
+     * @param mp La materia prima que se va a reservar.
+     * @param cantidad La cantidad de elementos necesarios para la construcción.
+     * @return {@code true} si la materia prima se reservó exitosamente, {@code false} en caso contrario.
+     *
+     * <p>Este método realiza las siguientes acciones:</p>
+     * <ul>
+     *   <li>Verifica si la materia prima existe en el stock.</li>
+     *   <li>Si la materia prima existe y su stock es suficiente para cubrir la cantidad necesaria para la construcción:
+     *     <ul>
+     *       <li>Calcula el nuevo valor del stock restando la cantidad necesaria de elementos para la construcción.</li>
+     *       <li>Actualiza el estado de la materia prima a reservado (estado es {@code true}).</li>
+     *       <li>Actualiza el stock de la materia prima con el nuevo valor.</li>
+     *       <li>Muestra un mensaje indicando que la materia prima se reservó exitosamente.</li>
+     *       <li>Actualiza y muestra el estado total del stock.</li>
+     *       <li>Retorna {@code true}.</li>
+     *     </ul>
+     *   </li>
+     *   <li>Si la materia prima no tiene suficiente stock:
+     *     <ul>
+     *       <li>Muestra un mensaje indicando que la materia prima no tiene el stock suficiente.</li>
+     *       <li>Actualiza y muestra el stock de materias primas.</li>
+     *       <li>Retorna {@code false}.</li>
+     *     </ul>
+     *   </li>
+     *   <li>Si la materia prima no existe en el stock:
+     *     <ul>
+     *       <li>Muestra un mensaje indicando que la materia prima no existe en el stock.</li>
+     *       <li>Retorna {@code false}.</li>
+     *     </ul>
+     *   </li>
+     * </ul>
+     */
 
     public boolean reservarMateriaPrima(MateriaPrima mp, int cantidad) {
         if (this.stock.materiaPrimas.contains(mp)) {
@@ -538,6 +734,22 @@ public class Fabrica {
             return false;
         }
     }
+
+    /**
+     * Compra una cantidad específica de una materia prima y la reserva.
+     *
+     * @param mp La materia prima que se va a comprar.
+     * @param cantidad La cantidad de elementos de materia prima que se van a comprar.
+     *
+     * <p>Este método realiza las siguientes acciones:</p>
+     * <ul>
+     *   <li>Imprime un mensaje indicando que se va a proceder con la compra de la materia prima especificada.</li>
+     *   <li>Calcula el nuevo stock de la materia prima multiplicando la cantidad de elementos necesarios para la construcción.</li>
+     *   <li>Agrega la materia prima con el nuevo stock al inventario.</li>
+     *   <li>Actualiza y muestra el stock total de materias primas.</li>
+     *   <li>Reserva la materia prima recién comprada.</li>
+     * </ul>
+     */
 
     public void comprarMateriaPrima(MateriaPrima mp, int cantidad) {
         System.out.println("A CONTINUACION SE COMPRARA LA MATERIA PRIMA(" + mp.getNombre() + ")");
@@ -575,6 +787,7 @@ public class Fabrica {
         this.stock.stockSubComponentesCompuestos();
     }
 
+    //Muestra el estado actual de cada uno de los elementos dentro del stock
     public void consultarEstado() {
         this.stock.consultarEstadoTotal();
     }

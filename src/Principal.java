@@ -5,7 +5,8 @@ public class Principal {
 
     public static void main(String[] args) {
 
-        //CREACION DE LOS OBJETOS NECESARIOS PARA LAS PRUEBAS
+        //CREACION DE LOS OBJETOS NECESARIOS
+
         MateriaPrima aluminio = new MateriaPrima("ALUMINIO", 2);
         MateriaPrima tungsteno = new MateriaPrima("TUNGSTENO", 1);
         MateriaPrima zinc = new MateriaPrima("ZINC", 2);
