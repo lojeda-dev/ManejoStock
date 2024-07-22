@@ -173,7 +173,7 @@ public class Fabrica {
             System.out.println("LISTA DE COMPONENTES COMPUESTOS VACIA");
 
         if (validarFabricacionProductoFinal(pf) == true) {
-            System.out.println("ACTUALMENTE SE RESERVARON LAS ELEMENTOS NECESARIOS PARA LA CONSTRUCCION DEL" +
+            System.out.println("ACTUALMENTE SE RESERVARON LOS ELEMENTOS NECESARIOS PARA LA CONSTRUCCION DEL" +
                     " PRODUCTO FINAL(" + pf.getNombre() + ")");
             pf.setStock(1);
             stock.stockProductosFinales();
@@ -433,7 +433,7 @@ public class Fabrica {
             System.out.println("LISTA DE SUBCOMPONENTES COMPUESTOS VACIA");
 
         if (validarFabricacionComponenteCompuesto(cc) == true) {
-            System.out.println("ACTUALMENTE SE RESERVARON LAS ELEMENTOS NECESARIOS PARA LA CONSTRUCCION DEL" +
+            System.out.println("ACTUALMENTE SE RESERVARON LOS ELEMENTOS NECESARIOS PARA LA CONSTRUCCION DEL " +
                     "COMPONENTE COMPUESTO(" + cc.getNombre() + ")");
             cc.setStock(cc.getCantElementosConstruccion());
             this.stock.componentesCompuestos.add(cc);

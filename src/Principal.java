@@ -6,7 +6,6 @@ public class Principal {
     public static void main(String[] args) {
 
         //CREACION DE LOS OBJETOS NECESARIOS
-
         MateriaPrima aluminio = new MateriaPrima("ALUMINIO", 2);
         MateriaPrima tungsteno = new MateriaPrima("TUNGSTENO", 1);
         MateriaPrima zinc = new MateriaPrima("ZINC", 2);
@@ -58,7 +57,11 @@ public class Principal {
 
         pp.agregarStockComponenteCompuesto(puerta,30);
 
-        pp.agregarStockSubComponenteCompuesto(chapa,30);*/
+        pp.agregarStockSubComponenteCompuesto(chapa,30);
+
+        pp.cargarProductoFinal(productoFinal);
+        pp.reservar(productoFinal);
+        pp.reservar(productoFinal);*/
 
 
         //SEGUNDA PRUEBA CON STOCK INSUFICIENTE
@@ -73,23 +76,24 @@ public class Principal {
 
         pp.agregarStockComponenteCompuesto(puerta,1);
 
-        pp.agregarStockSubComponenteCompuesto(chapa,1);*/
+        pp.agregarStockSubComponenteCompuesto(chapa,1);
+
+        pp.cargarProductoFinal(productoFinal);
+        pp.reservar(productoFinal);
+        pp.reservar(productoFinal);*/
 
 
         //TERCER PRUEBA SIN STOCK DE LOS ELEMENTOS
         /*pp.cargarProductoFinal(productoFinal);
         pp.reservar(productoFinal);
-        pp.reservar(productoFinal);
-        pp.mostrarStockTotal();
-        pp.consultarEstadoTotal();*/
+        pp.reservar(productoFinal);*/
 
 
         //SEGUNDO CASO DE USO
-       /* Empresa.SegundaParte sp = new Empresa.SegundaParte();
+        /*Empresa.SegundaParte sp = new Empresa.SegundaParte();
         sp.cargarProductoFinal(productoFinal);
         sp.reservar(productoFinal);
         sp.reservar(productoFinal);
         sp.reservar(productoFinal);*/
-
     }
 }
